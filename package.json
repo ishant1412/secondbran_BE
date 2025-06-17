@@ -1,0 +1,32 @@
+{
+  "name": "places-sharing-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "build": "tsc -b",
+    "dev": "npm run build && npm run start",
+    "git:initpush": "cmd /C \"git init && git remote add origin https://github.com/ishant1412/brainlyapp.git && set /p msg=Enter commit message: && git add . && git commit -m \"%msg%\" && git push -u origin main\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/mongoose": "^5.11.96",
+    "@types/react": "^19.1.1",
+    "@types/react-dom": "^19.1.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "react": "^19.1.0",
+    "react-router-dom": "^7.5.0",
+    "zod": "^3.24.2"
+  }
+}

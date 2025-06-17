@@ -1,0 +1,1 @@
+{"root":["./src/auth.ts","./src/content.ts","./src/db.ts","./src/index.ts","./src/middleware.ts","./src/component/signup.tsx"],"version":"5.8.2"}
