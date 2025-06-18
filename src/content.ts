@@ -7,14 +7,7 @@ import mongoose from "mongoose";
 const { contentmodel } = require("./db")
 const contentTypes = ['video', 'article', 'podcast'] as const; // Extend as needed
 app.use(express.json());
-const contentZodSchema = z.object({
-    token:z.string(),
-    link: z.string().url(),
-    type: z.enum(contentTypes),
-    title: z.string(),
-    tags: z.array(z.string().regex(/^[a-f\d]{24}$/i)).optional(), // ObjectId as string
-    userId: z.string().regex(/^[a-f\d]{24}$/i), // ObjectId as string
-});
+import { contentZodSchema } from "./types";
  declare global {
   namespace Express {
     interface Request {
@@ -22,19 +15,14 @@ const contentZodSchema = z.object({
   }
 }}
 async function contentpost(req: Request, res: Response) {
-    const contentdata = req.body;
+   
     const isvalid = contentZodSchema.safeParse(req.body);
     if (isvalid.success) {
+
         const data = isvalid.data;
-        const content = {
-            title:data.title,
-            type:data.type,
-            link:data.link,
-            tags: data.tags?.map((id) => new mongoose.Types.ObjectId(id)),
-            userId: new mongoose.Types.ObjectId(data.userId)
-        }
+
         try {
-            await contentmodel.create(content);
+            await contentmodel.create(data);
             res.status(200).send({
                 message: "succesfully inserted content"
 
@@ -48,7 +36,7 @@ async function contentpost(req: Request, res: Response) {
     }
     else {
         res.status(400).send({
-            message: "foramt tupe is unvalid"
+            message: isvalid.result.flatten()
         })
     }
 
@@ -56,14 +44,14 @@ async function contentpost(req: Request, res: Response) {
 }
 
 async function contentget(req: Request, res: Response) {
-    console.log("entered the content get")
+  //  console.log("entered the content get")
     if (req.user_id) {
         console.log(req.user_id);
         const userId = new mongoose.Types.ObjectId(req.user_id);
         try {
 
             const usercontentdata = await contentmodel.find({ userId: userId });
-            console.log(usercontentdata);
+           // console.log(usercontentdata);
             res.status(200).json({
                 usercontentdata: usercontentdata,
                 message: "the data is sent"

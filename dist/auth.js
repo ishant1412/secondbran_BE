@@ -8,30 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const zod_1 = __importDefault(require("zod"));
 const express = require("express");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const secret = "hehee";
+const env_config_1 = require("./env_config");
 const { usermodel, linkmodel, contentmodel } = require("./db");
-const usertype = zod_1.default.object({
-    username: zod_1.default.string(),
-    password: zod_1.default.string()
-});
+const types_1 = require("./types");
 const app = express();
 app.use(express.json());
 function signupauth(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { username, password } = req.body;
-        const isright = usertype.safeParse(req.body);
+        const isright = types_1.usertype.safeParse(req.body);
         if (isright) {
+            const { username, password, email } = req.body;
             let userexist = yield usermodel.findOne({ username: username });
             if (!userexist) {
                 try {
-                    yield usermodel.create({ username: username, password: password });
+                    const hashed_pass = yield bcrypt.hash(password, parseInt(env_config_1.env.SALT_ROUND));
+                    yield usermodel.create({ username: username, password: hashed_pass, email: email });
                 }
                 catch (e) {
                     res.send({
@@ -47,21 +42,21 @@ function signupauth(req, res) {
         }
         else {
             res.send({
-                message: "format is not correct"
+                message: isright.result.flatten() // this will send the input errors to FE
             });
         }
     });
 }
 function loginauth(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("entered llogin auth");
-        var { username, password } = req.body;
-        const isright = usertype.safeParse(req.body);
+        const isright = types_1.usertype.safeParse(req.body);
         if (isright) {
+            const { username, password, email } = req.body;
             let userexist = yield usermodel.findOne({ username: username });
             if (userexist) {
-                if (userexist.password === password) {
-                    const token = jwt.sign({ user_id: userexist._id }, secret, { expiresIn: "1h" });
+                const hashed_pass = yield bcrypt.hash(password, env_config_1.env.SALT_ROUND);
+                if (userexist.password === hashed_pass) {
+                    const token = jwt.sign({ user_id: userexist._id }, env_config_1.env.JWT_SECRET, { expiresIn: "1d" });
                     res.setHeader("Authorization", token);
                     res.setHeader("Access-Control-Expose-Headers", "Authorization");
                     res.status(200).send({
@@ -75,14 +70,14 @@ function loginauth(req, res) {
                 }
             }
             else {
-                res.status(200).send({
+                res.status(400).send({
                     message: "user does not exist go signin"
                 });
             }
         }
         else {
-            res.status(200).send({
-                message: "format incorrrect"
+            res.status(400).send({
+                message: isright.result.flatten() // same as we did in signin time 
             });
         }
     });

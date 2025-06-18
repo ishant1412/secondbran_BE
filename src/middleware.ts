@@ -7,6 +7,10 @@ import { Navigate } from "react-router-dom";
  app.use(express.json());
 
 const jwt = require("jsonwebtoken");
+
+
+
+
 async function Authuser(req:Request,res:Response,next:NextFunction){
     if(req.headers['authorization']){
          

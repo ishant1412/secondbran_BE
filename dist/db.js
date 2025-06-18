@@ -1,26 +1,24 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const types_1 = require("./types");
 const mongo = require("mongoose");
 const userschema = new mongo.Schema({
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
-});
-const contentTypes = ['image', 'video', 'article', 'audio']; // Extend as needed
+    password: { type: String, required: true },
+    email: { type: String, required: true }
+}); // Extend as needed
 const contentSchema = new mongo.Schema({
-    link: { type: String, required: true },
-    type: { type: String, enum: contentTypes, required: true },
+    link: { type: String },
+    type: { type: String, enum: types_1.contentTypes, required: true },
     title: { type: String, required: true },
+    description: { typeL: String },
+    shareable: { type: Boolean, required: true },
     tags: [{ type: mongo.Schema.Types.ObjectId, ref: 'Tag' }],
     userId: { type: mongo.Schema.Types.ObjectId, ref: 'User', required: true },
 });
-const linkSchema = new mongo.Schema({
-    hash: { type: String, required: true },
-    userId: { type: mongo.Schema.Types.ObjectId, ref: 'User', required: true },
-});
-const linkmodel = mongo.model("links", linkSchema);
 const contentmodel = mongo.model("contents", contentSchema);
 const usermodel = mongo.model("users", userschema);
 module.exports = {
-    linkmodel: linkmodel,
     contentmodel: contentmodel,
     usermodel: usermodel
 };
