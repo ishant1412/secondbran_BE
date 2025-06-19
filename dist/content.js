@@ -24,8 +24,16 @@ function contentpost(req, res) {
         const isvalid = types_1.contentZodSchema.safeParse(req.body);
         if (isvalid.success) {
             const data = isvalid.data;
+            const oid = new mongoose_1.default.Types.ObjectId(data.userId);
+            const content = { link: data.link,
+                type: data.type,
+                title: data.title,
+                description: data.description,
+                shareable: data.shareable,
+                tags: data.tags,
+                userId: oid };
             try {
-                yield contentmodel.create(data);
+                yield contentmodel.create(content);
                 res.status(200).send({
                     message: "succesfully inserted content"
                 });
@@ -38,7 +46,7 @@ function contentpost(req, res) {
         }
         else {
             res.status(400).send({
-                message: isvalid.result.flatten()
+                message: isvalid.error.flatten()
             });
         }
     });
@@ -46,6 +54,7 @@ function contentpost(req, res) {
 function contentget(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         //  console.log("entered the content get")
+        console.log("hi");
         if (req.user_id) {
             console.log(req.user_id);
             const userId = new mongoose_1.default.Types.ObjectId(req.user_id);

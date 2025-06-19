@@ -20,9 +20,16 @@ async function contentpost(req: Request, res: Response) {
     if (isvalid.success) {
 
         const data = isvalid.data;
-
+        const oid = new mongoose.Types.ObjectId(data.userId);
+      const content = {    link:data.link,
+     type:data.type,
+     title:data.title,
+     description:data.description,
+     shareable:data.shareable,
+     tags:data.tags,
+     userId:oid}
         try {
-            await contentmodel.create(data);
+            await contentmodel.create(content);
             res.status(200).send({
                 message: "succesfully inserted content"
 
@@ -36,7 +43,7 @@ async function contentpost(req: Request, res: Response) {
     }
     else {
         res.status(400).send({
-            message: isvalid.result.flatten()
+            message: isvalid.error.flatten()
         })
     }
 
@@ -45,6 +52,7 @@ async function contentpost(req: Request, res: Response) {
 
 async function contentget(req: Request, res: Response) {
   //  console.log("entered the content get")
+  console.log("hi");
     if (req.user_id) {
         console.log(req.user_id);
         const userId = new mongoose.Types.ObjectId(req.user_id);

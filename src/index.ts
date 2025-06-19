@@ -15,16 +15,19 @@ mongoose.connect(env.DATABASE_URL);
 
 const app=express();
 app.use(express.json());
-app.use(cors(env.FE_URL))
-app.post("/api/vi/signin",signupauth);
+app.use(cors())
+app.post("/api/v1/signup",signupauth);
 app.post("/api/v1/login",loginauth);
-app.use(Authuser);
-app.post("/api/v1/content",contentpost);
-app.get("/api/v1/contents",contentget);
-app.delete("/api/v1/content",contentdelete);
 
-app.listen(parseInt(env.PORT),()=>{
-    console.log("hosted at http://localhost:3000")
+
+
+app.delete("/api/v1/contentdelete",contentdelete);
+app.post("/api/v1/contentpost",contentpost);
+app.use(Authuser);
+app.get("/api/v1/getcontent",contentget);
+
+app.listen(Number(env.PORT),()=>{
+    console.log("hosted at http://localhost:3000" +env.DATABASE_URL +Number(env.PORT))
 });
 
 

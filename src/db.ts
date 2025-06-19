@@ -17,9 +17,9 @@ const contentSchema = new mongo.Schema({
   link: { type: String },
   type: { type: String, enum: contentTypes, required: true },
   title: { type: String, required: true },
-  description:{typeL:String},
+  description:{type:String},
   shareable:{type:Boolean,required:true},
-  tags: [{ type: mongo.Schema.Types.ObjectId, ref: 'Tag' }],
+  tags:{type:[String]},
   userId: { type: mongo.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 

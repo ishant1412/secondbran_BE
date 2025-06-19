@@ -13,13 +13,13 @@ const mongoose_1 = __importDefault(require("mongoose"));
 mongoose_1.default.connect(env_config_1.env.DATABASE_URL);
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use(cors(env_config_1.env.FE_URL));
-app.post("/api/vi/signin", signupauth);
+app.use(cors());
+app.post("/api/v1/signup", signupauth);
 app.post("/api/v1/login", loginauth);
+app.delete("/api/v1/contentdelete", contentdelete);
+app.post("/api/v1/contentpost", contentpost);
 app.use(middleware_1.default);
-app.post("/api/v1/content", contentpost);
-app.get("/api/v1/contents", contentget);
-app.delete("/api/v1/content", contentdelete);
-app.listen(parseInt(env_config_1.env.PORT), () => {
-    console.log("hosted at http://localhost:3000");
+app.get("/api/v1/getcontent", contentget);
+app.listen(Number(env_config_1.env.PORT), () => {
+    console.log("hosted at http://localhost:3000" + env_config_1.env.DATABASE_URL + Number(env_config_1.env.PORT));
 });

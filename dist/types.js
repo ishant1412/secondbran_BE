@@ -23,17 +23,17 @@ const envSchema = z.object({
     DATABASE_URL: z.string().url(),
     JWT_SECRET: z.string().min(1),
     DOMAIN: z.string().url(),
-    FE_URL: z.string().url(),
-    SALT_ROUND: z.string(),
+    FE_URL: z.string(),
+    SALT_ROUNDS: z.string(),
 });
 exports.envSchema = envSchema;
 const contentZodSchema = z.object({
-    link: z.string().url(),
+    link: z.string().url().optional(),
     type: z.enum(contentTypes),
     title: z.string(),
     description: z.string(),
-    shareable: z.boolean(),
-    tags: z.array(z.string().regex(/^[a-f\d]{24}$/i)).optional(), // ObjectId as string
-    userId: z.string().regex(/^[a-f\d]{24}$/i), // ObjectId as string
+    shareable: z.boolean().default(false).optional(),
+    tags: z.array(z.string()).optional(),
+    userId: z.string().regex(/^[a-f\d]{24}$/i).optional(), // ObjectId as string
 });
 exports.contentZodSchema = contentZodSchema;
